@@ -1,0 +1,26 @@
+{
+  "name": "trvia-api",
+  "version": "0.0.0",
+  "description": "The Official API For Trvia",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jackthomsonn/trvia-api.git"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Jack Thomson",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.1",
+    "node-restful": "^0.2.6",
+    "request": "^2.83.0",
+    "shortid": "^2.2.8",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {}
+}
