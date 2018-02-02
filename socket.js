@@ -145,7 +145,7 @@ const socket = (io) => {
       if (players[_id] && players[_id].isHost) {
         io.in(options.gameId).emit('hostLeft')
         delete games[options.gameId]
-        deleteGame(players[_id].gameId)
+        deleteGame(options.gameId)
 
         io.emit('updateLiveGames', {
           list: getLiveGames(games)
