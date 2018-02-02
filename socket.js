@@ -1,8 +1,15 @@
-const { findWinner, doesGameExist, getQuestionsForGame, getQuestions, createGame } = require('./utils')
+const {
+  findWinner,
+  doesGameExist,
+  getQuestionsForGame,
+  getQuestions,
+  createGame,
+  deleteGame,
+  getLiveGames } = require('./utils')
 
 const players = {}
 const scores = []
-let answers = 0
+const games = {}
 
 const socket = (io) => {
   io.on('connection', (socket) => {
@@ -11,6 +18,10 @@ const socket = (io) => {
     socket.on('joinGame', (options) => {
       doesGameExist(options.gameId).then(exists => {
         if (exists) {
+          if (games[options.gameId].isInPlay) {
+            socket.emit('gameHasStarted', { message: 'That game has already started' })
+            return
+          }
           socket.join(options.gameId)
 
           players[_id] = {
@@ -22,7 +33,7 @@ const socket = (io) => {
 
           getQuestionsForGame(options.gameId).then(questions => {
             socket.emit('joinedGame', questions)
-            io.sockets.in(options.gameId).emit('playerJoined', options.playerName)
+            io.in(options.gameId).emit('playerJoined', options.playerName)
           })
         } else {
           socket.emit('gameDoesNotExist', { message: 'That game does not exist' })
@@ -36,14 +47,26 @@ const socket = (io) => {
           socket.emit('gameId', gameId)
           socket.join(gameId)
 
+          games[gameId] = {
+            gameId: gameId,
+            gameName: options.gameName,
+            answers: 0,
+            isInPlay: false,
+            private: options.private
+          }
+
           players[_id] = {
-            roomName: gameId,
+            gameId: gameId,
             name: options.playerName,
             isHost: options.isHost,
             score: 0
           }
 
-          io.sockets.in(gameId).emit('playerJoined', options.playerName)
+          io.in(gameId).emit('playerJoined', options.playerName)
+
+          io.emit('updateLiveGames', {
+            list: getLiveGames(games)
+          })
         })
       }).catch(error => {
         return error
@@ -52,7 +75,18 @@ const socket = (io) => {
 
     socket.on('startGame', (options) => {
       getQuestionsForGame(options.gameId).then(questions => {
-        io.sockets.in(options.gameId).emit('startTheGame', questions)
+        io.in(options.gameId).emit('startTheGame', questions)
+        games[options.gameId].isInPlay = true
+
+        io.emit('updateLiveGames', {
+          list: getLiveGames(games)
+        })
+      })
+    })
+
+    socket.on('getLiveGames', () => {
+      socket.emit('listOfLiveGames', {
+        list: getLiveGames(games)
       })
     })
 
@@ -69,7 +103,7 @@ const socket = (io) => {
         if (players[key]) {
           updatedPlayersList.push(players[key])
 
-          if (playersInGameCount - 1 === updatedPlayersList.length) {
+          if (playersInGameCount === updatedPlayersList.length) {
             socket.emit('updatePlayersInGame', updatedPlayersList)
           }
         }
@@ -81,16 +115,22 @@ const socket = (io) => {
         players[_id].score = players[_id].score + 1
       }
 
-      answers++
+      games[options.gameId].answers = games[options.gameId].answers + 1
 
-      if (answers === Object.keys(io.sockets.adapter.rooms[options.gameId].sockets).length) {
-        io.sockets.in(options.gameId).emit('everyoneAnswered')
-        answers = 0
+      if (games[options.gameId].answers === Object.keys(io.sockets.adapter.rooms[options.gameId].sockets).length) {
+        io.in(options.gameId).emit('everyoneAnswered')
+        games[options.gameId].answers = 0
       }
     })
 
-    socket.on('resetAnswerCount', () => {
-      answers = 0
+    socket.on('resetAnswerCount', (options) => {
+      if (games[options.gameId]) {
+        games[options.gameId].answers = 0
+      } else {
+        games[options.gameId] = {
+          answers: 0
+        }
+      }
     })
 
     socket.on('endOfGame', (options) => {
@@ -98,17 +138,37 @@ const socket = (io) => {
         scores.push(players[key].score)
       }
 
-      io.sockets.in(options.gameId).emit('theWinner', `The winner is ${findWinner(scores, players)}`)
+      io.in(options.gameId).emit('theWinner', { name: findWinner(scores, players) })
     })
 
     socket.on('leaveGame', (options) => {
       if (players[_id] && players[_id].isHost) {
-        io.sockets.in(options.gameId).emit('hostLeft')
+        io.in(options.gameId).emit('hostLeft')
+        delete games[options.gameId]
+        deleteGame(players[_id].gameId)
+
+        io.emit('updateLiveGames', {
+          list: getLiveGames(games)
+        })
       }
 
-      io.sockets.in(options.gameId).emit('playerLeft', options.playerName)
+      io.in(options.gameId).emit('playerLeft', options.playerName)
 
       socket.leave(options.gameId)
+    })
+
+    socket.on('disconnect', () => {
+      if (players[_id] && players[_id].isHost) {
+        io.in(players[_id].gameId).emit('hostLeft')
+        deleteGame(players[_id].gameId)
+        delete games[players[_id].gameId]
+      } else if (players[_id] && !players[_id].isHost) {
+        io.in(players[_id].gameId).emit('playerLeft', players[_id].playerName)
+      } else {
+        return
+      }
+
+      delete players[_id]
     })
   })
 }

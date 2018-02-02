@@ -6,21 +6,14 @@ const bodyParser = require('body-parser')
 const application = {
   instantiateApplicationDefaults: (app) => {
     mongoose.Promise = global.Promise
-    mongoose.connect('mongodb://localhost/trvia')
+    mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/trvia')
 
-    app.use(bodyParser.json({ limit: '50mb' }))
-    app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
+    app.use(bodyParser.json())
     app.use(cors())
   },
-  setupApi: (app) => {
-    app.use('/api', require('./routes/games/games'))
-  },
-  setupSocket: (io) => {
-    socket(io)
-  },
-  start: (server) => {
-    server.listen(9000)
-  }
+  setupApi: app => app.use('/api', require('./routes/games/games')),
+  setupSocket: io => socket(io),
+  start: server => server.listen(process.env.PORT || 9000)
 }
 
 module.exports = application
