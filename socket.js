@@ -56,7 +56,7 @@ const socket = (io) => {
           }
 
           players[_id] = {
-             gameId: gameId,
+            gameId: gameId,
             name: options.playerName,
             isHost: options.isHost,
             score: 0
@@ -112,7 +112,7 @@ const socket = (io) => {
 
     socket.on('submitAnswer', (options) => {
       if (options.isAnswerCorrect) {
-        players[_id].score = players[_id].score + 1
+        players[_id].score = players[_id].score + 1 * 100
       }
 
       games[options.gameId].answers = games[options.gameId].answers + 1
@@ -134,13 +134,20 @@ const socket = (io) => {
     })
 
     socket.on('endOfGame', (options) => {
+      let playerScore;
+
       for (let key in players) {
         scores.push(players[key].score)
+
+        if (players[key].name === options.playerName) {
+          socket.emit('getPlayersScore', {
+            score: players[key].score
+          })
+        }
       }
 
       io.in(options.gameId).emit('theWinner', {
-        name: findWinner(scores, players),
-        playerScore: players[_id].score
+        name: findWinner(scores, players)
       })
     })
 
