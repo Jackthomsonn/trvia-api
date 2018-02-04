@@ -112,7 +112,7 @@ const socket = (io) => {
 
     socket.on('submitAnswer', (options) => {
       if (options.isAnswerCorrect) {
-        players[_id].score = players[_id].score + 1
+        players[_id].score = (players[_id].score + 1) * 100
       }
 
       games[options.gameId].answers = games[options.gameId].answers + 1
@@ -138,7 +138,10 @@ const socket = (io) => {
         scores.push(players[key].score)
       }
 
-      io.in(options.gameId).emit('theWinner', { name: findWinner(scores, players) })
+      io.in(options.gameId).emit('theWinner', {
+        name: findWinner(scores, players),
+        playerScore: players[_id].score
+      })
     })
 
     socket.on('leaveGame', (options) => {
@@ -162,6 +165,9 @@ const socket = (io) => {
         io.in(players[_id].gameId).emit('hostLeft')
         deleteGame(players[_id].gameId)
         delete games[players[_id].gameId]
+        io.emit('updateLiveGames', {
+          list: getLiveGames(games)
+        })
       } else if (players[_id] && !players[_id].isHost) {
         io.in(players[_id].gameId).emit('playerLeft', players[_id].playerName)
       } else {
