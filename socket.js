@@ -56,7 +56,7 @@ const socket = (io) => {
           }
 
           players[_id] = {
-            gameId: gameId,
+             gameId: gameId,
             name: options.playerName,
             isHost: options.isHost,
             score: 0
@@ -112,7 +112,7 @@ const socket = (io) => {
 
     socket.on('submitAnswer', (options) => {
       if (options.isAnswerCorrect) {
-        players[_id].score = (players[_id].score + 1) * 100
+        players[_id].score = players[_id].score + 1
       }
 
       games[options.gameId].answers = games[options.gameId].answers + 1
