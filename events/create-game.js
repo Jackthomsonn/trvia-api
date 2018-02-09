@@ -2,7 +2,7 @@ const { getQuestions, createGame, getLiveGames } = require('../utils')
 const { games, players } = require('../world')
 
 const CreateGame = (socket, io, options) => {
-  getQuestions().then(questions => {
+  getQuestions(options).then(questions => {
     createGame(options.gameName, questions).then(gameId => {
       socket.emit('gameId', gameId)
       socket.join(gameId)
