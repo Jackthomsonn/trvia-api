@@ -1,188 +1,39 @@
-const {
-  findWinner,
-  doesGameExist,
-  getQuestionsForGame,
-  getQuestions,
-  createGame,
-  deleteGame,
-  getLiveGames } = require('./utils')
+const { JoinGame } = require('./events/join-game')
+const { CreateGame } = require('./events/create-game')
+const { StartGame } = require('./events/start-game')
+const { GetLiveGames } = require('./events/get-live-games')
+const { GetPlayers } = require('./events/get-players')
+const { SubmitAnswer } = require('./events/submit-answer')
+const { ResetAnswerCount } = require('./events/reset-answer-count')
+const { EndOfGame } = require('./events/end-of-game')
+const { LeaveGame } = require('./events/leave-game')
+const { Disconnect } = require('./events/disconnect')
+const { GetWinner } = require('./events/get-winner')
 
-const players = {}
-const scores = []
-const games = {}
+const socket = io => {
+  io.on('connection', socket => {
 
-const socket = (io) => {
-  io.on('connection', (socket) => {
-    const _id = socket.id
+    socket.on('joinGame', JoinGame.bind(null, socket, io))
 
-    socket.on('joinGame', (options) => {
-      doesGameExist(options.gameId).then(exists => {
-        if (exists) {
-          if (games[options.gameId].isInPlay) {
-            socket.emit('gameHasStarted', { message: 'That game has already started' })
-            return
-          }
-          socket.join(options.gameId)
+    socket.on('createGame', CreateGame.bind(null, socket, io))
 
-          players[_id] = {
-            gameId: options.gameId,
-            name: options.playerName,
-            isHost: options.isHost,
-            score: 0
-          }
+    socket.on('startGame', StartGame.bind(null, io))
 
-          getQuestionsForGame(options.gameId).then(questions => {
-            socket.emit('joinedGame', questions)
-            io.in(options.gameId).emit('playerJoined', options.playerName)
-          })
-        } else {
-          socket.emit('gameDoesNotExist', { message: 'That game does not exist' })
-        }
-      })
-    })
+    socket.on('getLiveGames', GetLiveGames.bind(null, socket))
 
-    socket.on('createGame', (options) => {
-      getQuestions().then(questions => {
-        createGame(options.gameName, questions).then(gameId => {
-          socket.emit('gameId', gameId)
-          socket.join(gameId)
+    socket.on('getPlayers', GetPlayers.bind(null, socket, io))
 
-          games[gameId] = {
-            gameId: gameId,
-            gameName: options.gameName,
-            answers: 0,
-            isInPlay: false,
-            private: options.private
-          }
+    socket.on('submitAnswer', SubmitAnswer.bind(null, socket, io))
 
-          players[_id] = {
-            gameId: gameId,
-            name: options.playerName,
-            isHost: options.isHost,
-            score: 0
-          }
+    socket.on('resetAnswerCount', ResetAnswerCount)
 
-          io.in(gameId).emit('playerJoined', options.playerName)
+    socket.on('endOfGame', EndOfGame.bind(null, socket, io))
 
-          io.emit('updateLiveGames', {
-            list: getLiveGames(games)
-          })
-        })
-      }).catch(error => {
-        return error
-      })
-    })
+    socket.on('leaveGame', LeaveGame.bind(null, socket, io))
 
-    socket.on('startGame', (options) => {
-      getQuestionsForGame(options.gameId).then(questions => {
-        io.in(options.gameId).emit('startTheGame', questions)
-        games[options.gameId].isInPlay = true
+    socket.on('disconnect', Disconnect.bind(null, socket, io))
 
-        io.emit('updateLiveGames', {
-          list: getLiveGames(games)
-        })
-      })
-    })
-
-    socket.on('getLiveGames', () => {
-      socket.emit('listOfLiveGames', {
-        list: getLiveGames(games)
-      })
-    })
-
-    socket.on('getPlayers', (options) => {
-      if (!io.sockets.adapter.rooms[options.gameId]) {
-        return
-      }
-
-      const playersInRoom = io.sockets.adapter.rooms[options.gameId].sockets
-      const updatedPlayersList = []
-      const playersInGameCount = Object.keys(playersInRoom).length
-
-      for (let key in playersInRoom) {
-        if (players[key]) {
-          updatedPlayersList.push(players[key])
-
-          if (playersInGameCount === updatedPlayersList.length) {
-            socket.emit('updatePlayersInGame', updatedPlayersList)
-          }
-        }
-      }
-    })
-
-    socket.on('submitAnswer', (options) => {
-      if (options.isAnswerCorrect) {
-        players[_id].score = players[_id].score + 1 * 100
-      }
-
-      games[options.gameId].answers = games[options.gameId].answers + 1
-
-      if (games[options.gameId].answers === Object.keys(io.sockets.adapter.rooms[options.gameId].sockets).length) {
-        io.in(options.gameId).emit('everyoneAnswered')
-        games[options.gameId].answers = 0
-      }
-    })
-
-    socket.on('resetAnswerCount', (options) => {
-      if (games[options.gameId]) {
-        games[options.gameId].answers = 0
-      } else {
-        games[options.gameId] = {
-          answers: 0
-        }
-      }
-    })
-
-    socket.on('endOfGame', (options) => {
-      let playerScore;
-
-      for (let key in players) {
-        scores.push(players[key].score)
-
-        if (players[key].name === options.playerName) {
-          socket.emit('getPlayersScore', {
-            score: players[key].score
-          })
-        }
-      }
-
-      io.in(options.gameId).emit('theWinner', {
-        name: findWinner(scores, players)
-      })
-    })
-
-    socket.on('leaveGame', (options) => {
-      if (players[_id] && players[_id].isHost) {
-        io.in(options.gameId).emit('hostLeft')
-        delete games[options.gameId]
-        deleteGame(options.gameId)
-
-        io.emit('updateLiveGames', {
-          list: getLiveGames(games)
-        })
-      }
-
-      io.in(options.gameId).emit('playerLeft', options.playerName)
-
-      socket.leave(options.gameId)
-    })
-
-    socket.on('disconnect', () => {
-      if (players[_id] && players[_id].isHost) {
-        io.in(players[_id].gameId).emit('hostLeft')
-        deleteGame(players[_id].gameId)
-        delete games[players[_id].gameId]
-        io.emit('updateLiveGames', {
-          list: getLiveGames(games)
-        })
-      } else if (players[_id] && !players[_id].isHost) {
-        io.in(players[_id].gameId).emit('playerLeft', players[_id].playerName)
-      } else {
-        return
-      }
-
-      delete players[_id]
-    })
+    socket.on('getTheOverallWinner', GetWinner.bind(null, io))
   })
 }
 

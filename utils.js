@@ -1,11 +1,13 @@
 const request = require('request')
 const shortid = require('shortid')
-const uri = process.env.NODE_ENV = 'development'
-  ? 'http://localhost:' + process.env.PORT + '/api/games'
+const env = require('./env')
+
+const uri = env.NODE_ENV === 'development'
+  ? 'http://localhost:' + env.PORT + '/api/games'
   : 'https://trvia.herokuapp.com/api/games'
 
-const findWinner = (scores, players) => {
-  const winningScore = Math.max(...scores)
+const findWinner = (scores, players, options) => {
+  const winningScore = Math.max(...scores[options.gameId])
 
   for (let key in players) {
     if (players[key].score === winningScore) {
@@ -14,7 +16,7 @@ const findWinner = (scores, players) => {
   }
 }
 
-const doesGameExist = (gameId) => {
+const doesGameExist = gameId => {
   return new Promise((resolve) => {
     request(uri, (error, response) => {
       const games = JSON.parse(response.body);
@@ -24,7 +26,7 @@ const doesGameExist = (gameId) => {
   })
 }
 
-const getQuestionsForGame = (gameId) => {
+const getQuestionsForGame = gameId => {
   return new Promise((resolve) => {
     request(uri, (error, response) => {
       const games = JSON.parse(response.body);
@@ -40,7 +42,7 @@ const getQuestionsForGame = (gameId) => {
 
 const getQuestions = () => {
   return new Promise((resolve, reject) => {
-    request('https://opentdb.com/api.php?amount=20', (error, response, body) => {
+    request('https://opentdb.com/api.php?amount=2', (error, response, body) => {
       if (error) {
         reject(error)
       } else {
@@ -66,7 +68,7 @@ const createGame = (gameName, questions) => {
   })
 }
 
-const getGame = (gameId) => {
+const getGame = gameId => {
   return new Promise((resolve) => {
     request(uri, (error, response, body) => {
       const parsedBody = JSON.parse(body)
@@ -80,7 +82,7 @@ const getGame = (gameId) => {
   })
 }
 
-const deleteGame = (gameId) => {
+const deleteGame = gameId => {
   getGame(gameId).then((id) => {
     request.delete({
       url: `${uri}/${id}`
@@ -88,7 +90,7 @@ const deleteGame = (gameId) => {
   })
 }
 
-const getLiveGames = (games) => {
+const getLiveGames = games => {
   const gamesAsArray = []
   for (let key in games) {
     if (!games[key].private && !games[key].isInPlay) {

@@ -2,18 +2,25 @@ const socket = require('./socket')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const env = require('./env')
 
 const application = {
-  instantiateApplicationDefaults: (app) => {
+  instantiateApplicationDefaults: app => {
     mongoose.Promise = global.Promise
-    mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/trvia')
+    mongoose.connect(env.MONGO_URI)
 
     app.use(bodyParser.json())
     app.use(cors())
   },
-  setupApi: app => app.use('/api', require('./routes/games/games')),
-  setupSocket: io => socket(io),
-  start: server => server.listen(process.env.PORT || 9000)
+  setupAPI: app => {
+    app.use('/api', require('./routes/games/games'))
+  },
+  setupSocket: io => {
+    socket(io)
+  },
+  start: server => {
+    server.listen(env.PORT)
+  }
 }
 
 module.exports = application
