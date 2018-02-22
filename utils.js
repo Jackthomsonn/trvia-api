@@ -10,6 +10,7 @@ const getBaseUri = () => {
 }
 
 const findWinner = (scores, players, options) => {
+  console.log(winningScore)
   winningScore[options.gameId] = Math.max(...scores[options.gameId])
 
   for (let key in players) {
