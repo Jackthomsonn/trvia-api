@@ -6,5 +6,6 @@ const winningScore = {}
 module.exports = {
   players: players,
   scores: scores,
-  games: games
+  games: games,
+  winningScore: winningScore
 }
