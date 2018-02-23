@@ -46,8 +46,6 @@ const getQuestionsForGame = gameId => {
 }
 
 const getQuestions = (options) => {
-  console.log('Request looks like..')
-  console.log(`https://opentdb.com/api.php?amount=${options.amount}&difficulty=${options.difficulty}`)
   return new Promise((resolve, reject) => {
     request(`https://opentdb.com/api.php?amount=${options.amount}&difficulty=${options.difficulty}`, (error, response, body) => {
       if (error) {

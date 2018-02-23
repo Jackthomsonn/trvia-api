@@ -20,6 +20,7 @@ const application = {
   },
   start: server => {
     server.listen(env.PORT)
+    process.stdout.write(`Listening on port ${env.PORT} in ${env.NODE_ENV} mode`)
   }
 }
 
