@@ -90,7 +90,7 @@ const getGame = gameId => {
 const deleteGame = gameId => {
   getGame(gameId).then((id) => {
     request.delete({
-      url: `${getBaseUri() + '/api/games'}/${id}`
+      url: `${getBaseUri()}/${id}`
     })
   })
 }
