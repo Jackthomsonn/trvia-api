@@ -8,11 +8,11 @@
     "url": "git+https://github.com/Jackthomsonn/trvia-api.git"
   },
   "scripts": {
-    "start:dev": "yarn && yarn run build:dev && yarn run serve",
+    "start:dev": "yarn && yarn run build:dev && yarn start",
     "release": "yarn && yarn run build:prod",
     "build:dev": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
-    "serve": "node dist/app"
+    "start": "node dist/app"
   },
   "author": "Jack Thomson",
   "license": "ISC",
