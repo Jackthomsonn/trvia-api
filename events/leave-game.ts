@@ -1,5 +1,5 @@
-const { deleteGame, getLiveGames } = require('../utils')
-const { players, games } = require('../world')
+import { deleteGame, getLiveGames } from '../utilities/utils'
+import { players, games } from '../config//world'
 
 const LeaveGame = (socket, io, options) => {
   if (players[socket.id] && players[socket.id].isHost) {
@@ -17,6 +17,4 @@ const LeaveGame = (socket, io, options) => {
   socket.leave(options.gameId)
 }
 
-module.exports = {
-  LeaveGame: LeaveGame
-}
+export { LeaveGame }

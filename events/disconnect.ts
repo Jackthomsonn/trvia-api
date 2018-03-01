@@ -1,5 +1,5 @@
-const { deleteGame, getLiveGames } = require('../utils')
-const { players, games } = require('../world')
+import { deleteGame, getLiveGames } from '../utilities/utils'
+import { players, games } from '../config/world'
 
 const Disconnect = (socket, io) => {
   if (players[socket.id] && players[socket.id].isHost) {
@@ -18,6 +18,4 @@ const Disconnect = (socket, io) => {
   delete players[socket.id]
 }
 
-module.exports = {
-  Disconnect: Disconnect
-}
+export { Disconnect }

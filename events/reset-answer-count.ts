@@ -1,4 +1,4 @@
-const { games } = require('../world')
+import { games } from '../config/world'
 
 const ResetAnswerCount = (options) => {
   if (games[options.gameId]) {
@@ -10,6 +10,4 @@ const ResetAnswerCount = (options) => {
   }
 }
 
-module.exports = {
-  ResetAnswerCount: ResetAnswerCount
-}
+export { ResetAnswerCount }

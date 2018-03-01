@@ -1,4 +1,4 @@
-const { games, players } = require('../world')
+import { games, players } from '../config/world'
 
 const SubmitAnswer = (socket, io, options) => {
   if (options.isAnswerCorrect) {
@@ -13,6 +13,4 @@ const SubmitAnswer = (socket, io, options) => {
   }
 }
 
-module.exports = {
-  SubmitAnswer: SubmitAnswer
-}
+export { SubmitAnswer }

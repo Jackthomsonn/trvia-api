@@ -1,15 +1,15 @@
-const request = require('request')
-const shortid = require('shortid')
-const env = require('./env')
-const { winningScore } = require('./world')
+import request from 'request'
+import shortid from 'shortid'
+import { NODE_ENV, PORT } from '../config/env'
+import { winningScore } from '../config/world'
 
-const getBaseUri = () => {
-  return env.NODE_ENV === 'development'
-    ? `http://localhost:${env.PORT}/api/games`
+export const getBaseUri = () => {
+  return NODE_ENV === 'development'
+    ? `http://localhost:${PORT}/api/games`
     : 'https://trvia.herokuapp.com/api/games'
 }
 
-const findWinner = (scores, players, options) => {
+export const findWinner = (scores, players, options) => {
   winningScore[options.gameId] = Math.max(...scores[options.gameId])
 
   for (let key in players) {
@@ -21,7 +21,7 @@ const findWinner = (scores, players, options) => {
   }
 }
 
-const doesGameExist = gameId => {
+export const doesGameExist = gameId => {
   return new Promise((resolve) => {
     request(getBaseUri(), (error, response) => {
       const games = JSON.parse(response.body);
@@ -31,7 +31,7 @@ const doesGameExist = gameId => {
   })
 }
 
-const getQuestionsForGame = gameId => {
+export const getQuestionsForGame = gameId => {
   return new Promise((resolve) => {
     request(getBaseUri(), (error, response) => {
       const games = JSON.parse(response.body);
@@ -45,7 +45,7 @@ const getQuestionsForGame = gameId => {
   })
 }
 
-const getQuestions = (options) => {
+export const getQuestions = (options) => {
   return new Promise((resolve, reject) => {
     request(`https://opentdb.com/api.php?amount=${options.amount}&difficulty=${options.difficulty}`, (error, response, body) => {
       if (error) {
@@ -57,7 +57,7 @@ const getQuestions = (options) => {
   })
 }
 
-const createGame = (gameName, questions) => {
+export const createGame = (gameName: string, questions: Array<any>) => {
   const gameId = shortid.generate()
 
   return new Promise(resolve => {
@@ -66,14 +66,14 @@ const createGame = (gameName, questions) => {
       json: {
         name: gameName,
         gameId: gameId,
-        questions: JSON.parse(questions)
+        questions: (<any>JSON.parse)(questions)
       }
     })
     resolve(gameId)
   })
 }
 
-const getGame = gameId => {
+export const getGame = gameId => {
   return new Promise((resolve) => {
     request(getBaseUri(), (error, response, body) => {
       const parsedBody = JSON.parse(body)
@@ -87,7 +87,7 @@ const getGame = gameId => {
   })
 }
 
-const deleteGame = gameId => {
+export const deleteGame = gameId => {
   getGame(gameId).then((id) => {
     request.delete({
       url: `${getBaseUri()}/${id}`
@@ -95,7 +95,7 @@ const deleteGame = gameId => {
   })
 }
 
-const getLiveGames = games => {
+export const getLiveGames = games => {
   const gamesAsArray = []
   for (let key in games) {
     if (!games[key].private && !games[key].isInPlay) {
@@ -104,14 +104,4 @@ const getLiveGames = games => {
   }
 
   return gamesAsArray
-}
-
-module.exports = {
-  findWinner: findWinner,
-  doesGameExist: doesGameExist,
-  getQuestionsForGame: getQuestionsForGame,
-  getQuestions: getQuestions,
-  createGame: createGame,
-  deleteGame: deleteGame,
-  getLiveGames: getLiveGames
 }

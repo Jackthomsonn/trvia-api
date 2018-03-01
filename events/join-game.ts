@@ -1,5 +1,5 @@
-const { doesGameExist, getQuestionsForGame } = require('../utils')
-const { players, games } = require('../world')
+import { doesGameExist, getQuestionsForGame } from '../utilities/utils'
+import { players, games } from '../config/world'
 
 const JoinGame = (socket, io, options) => {
   doesGameExist(options.gameId).then(exists => {
@@ -27,6 +27,4 @@ const JoinGame = (socket, io, options) => {
   })
 }
 
-module.exports = {
-  JoinGame: JoinGame
-}
+export { JoinGame }

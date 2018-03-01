@@ -1,4 +1,4 @@
-const { players, scores } = require('../world')
+import { players, scores } from '../config/world'
 
 const EndOfGame = (socket, io, options) => {
   if (players[socket.id].gameId === options.gameId) {
@@ -8,6 +8,4 @@ const EndOfGame = (socket, io, options) => {
   }
 }
 
-module.exports = {
-  EndOfGame: EndOfGame
-}
+export { EndOfGame }

@@ -1,5 +1,5 @@
-const { findWinner } = require('../utils')
-const { players, scores } = require('../world')
+import { findWinner } from '../utilities/utils'
+import { players, scores } from '../config/world'
 
 const GetWinner = (io, options) => {
   scores[options.gameId] = []
@@ -17,6 +17,4 @@ const GetWinner = (io, options) => {
   delete scores[options.gameId]
 }
 
-module.exports = {
-  GetWinner: GetWinner
-}
+export { GetWinner }

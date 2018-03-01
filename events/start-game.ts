@@ -1,5 +1,5 @@
-const { getQuestionsForGame, getLiveGames } = require('../utils')
-const { games } = require('../world')
+import { getQuestionsForGame, getLiveGames } from '../utilities/utils'
+import { games } from '../config/world'
 
 const StartGame = (io, options) => {
   getQuestionsForGame(options.gameId).then(questions => {
@@ -12,6 +12,4 @@ const StartGame = (io, options) => {
   })
 }
 
-module.exports = {
-  StartGame: StartGame
-}
+export { StartGame }

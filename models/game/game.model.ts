@@ -1,4 +1,5 @@
-const restful = require('node-restful')
+import * as restful from 'node-restful'
+
 const mongoose = restful.mongoose
 
 const gameSchema = new mongoose.Schema({
@@ -16,4 +17,6 @@ const gameSchema = new mongoose.Schema({
   }
 })
 
-module.exports = restful.model('Game', gameSchema)
+const GamesModel = restful.model('Game', gameSchema)
+
+export { GamesModel }

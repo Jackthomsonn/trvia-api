@@ -1,4 +1,4 @@
-const { games, players } = require('../world')
+import { games, players }  from '../config/world'
 
 const GetPlayers = (socket, io, options) => {
   if (!io.sockets.adapter.rooms[options.gameId]) {
@@ -20,6 +20,4 @@ const GetPlayers = (socket, io, options) => {
   }
 }
 
-module.exports = {
-  GetPlayers: GetPlayers
-}
+export { GetPlayers }

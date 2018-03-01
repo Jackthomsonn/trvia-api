@@ -1,9 +1,9 @@
-const { getQuestions, createGame, getLiveGames } = require('../utils')
-const { games, players } = require('../world')
+import { getQuestions, createGame, getLiveGames } from '../utilities/utils'
+import { games, players } from '../config/world'
 
 const CreateGame = (socket, io, options) => {
-  getQuestions(options).then(questions => {
-    createGame(options.gameName, questions).then(gameId => {
+  getQuestions(options).then((questions: any) => {
+    createGame(options.gameName, questions).then((gameId: any) => {
       socket.emit('gameId', gameId)
       socket.join(gameId)
 
@@ -31,6 +31,4 @@ const CreateGame = (socket, io, options) => {
   })
 }
 
-module.exports = {
-  CreateGame: CreateGame
-}
+export { CreateGame }

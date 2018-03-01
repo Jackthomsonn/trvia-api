@@ -1,14 +1,14 @@
-const { JoinGame } = require('./events/join-game')
-const { CreateGame } = require('./events/create-game')
-const { StartGame } = require('./events/start-game')
-const { GetLiveGames } = require('./events/get-live-games')
-const { GetPlayers } = require('./events/get-players')
-const { SubmitAnswer } = require('./events/submit-answer')
-const { ResetAnswerCount } = require('./events/reset-answer-count')
-const { EndOfGame } = require('./events/end-of-game')
-const { LeaveGame } = require('./events/leave-game')
-const { Disconnect } = require('./events/disconnect')
-const { GetWinner } = require('./events/get-winner')
+import { JoinGame } from '../events/join-game'
+import { CreateGame } from '../events/create-game'
+import { StartGame } from '../events/start-game'
+import { GetLiveGames } from '../events/get-live-games'
+import { GetPlayers } from '../events/get-players'
+import { SubmitAnswer } from '../events/submit-answer'
+import { ResetAnswerCount } from '../events/reset-answer-count'
+import { EndOfGame } from '../events/end-of-game'
+import { LeaveGame } from '../events/leave-game'
+import { Disconnect } from '../events/disconnect'
+import { GetWinner } from '../events/get-winner'
 
 const socket = io => {
   io.on('connection', socket => {
@@ -37,4 +37,4 @@ const socket = io => {
   })
 }
 
-module.exports = socket
+export { socket }
