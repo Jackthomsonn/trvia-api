@@ -1,6 +1,6 @@
 {
   "name": "trvia-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Official API For Trvia",
   "main": "index.js",
   "repository": {
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/node": "^9.4.6",
     "@types/socket.io": "^1.4.31",
-    "automate-release-webpack-plugin": "0.0.3",
+    "automate-release-webpack-plugin": "^0.0.5",
     "ts-loader": "^4.0.0",
     "typescript": "^2.7.2",
     "uglifyjs-webpack-plugin": "^1.2.2",
