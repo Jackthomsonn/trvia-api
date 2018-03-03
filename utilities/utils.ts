@@ -1,5 +1,5 @@
-import request from 'request'
-import shortid from 'shortid'
+import * as request from 'request'
+import * as shortid from 'shortid'
 import { NODE_ENV, PORT } from '../config/env'
 import { winningScore } from '../config/world'
 
