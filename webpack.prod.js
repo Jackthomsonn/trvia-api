@@ -7,8 +7,6 @@ const AutomateRelease = require('automate-release-webpack-plugin')
 module.exports = merge(common, {
   plugins: [
     new UglifyJSPlugin(),
-    new AutomateRelease({
-      path: 'package.json'
-    })
+    new AutomateRelease()
   ]
 });
