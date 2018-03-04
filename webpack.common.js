@@ -7,18 +7,18 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         use: 'ts-loader',
         exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts']
   },
   output: {
-    filename: 'app.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: 'trvia-api.js',
+    path: path.resolve(__dirname, 'build')
   },
   target: 'node',
   externals: [nodeExternals()]

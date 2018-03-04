@@ -1,6 +1,8 @@
 import { games } from '../config/world'
 
-const ResetAnswerCount = (options) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const ResetAnswerCount = (options: IOptions) => {
   if (games[options.gameId]) {
     games[options.gameId].answers = 0
   } else {

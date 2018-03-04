@@ -1,6 +1,8 @@
-import { games, players }  from '../config/world'
+import { games, players } from '../config/world'
 
-const GetPlayers = (socket, io, options) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const GetPlayers = (socket: SocketIO.Socket, io: SocketIO.Server, options: IOptions) => {
   if (!io.sockets.adapter.rooms[options.gameId]) {
     return
   }
@@ -9,7 +11,7 @@ const GetPlayers = (socket, io, options) => {
   const updatedPlayersList = []
   const playersInGameCount = Object.keys(playersInRoom).length
 
-  for (let key in playersInRoom) {
+  for (const key in playersInRoom) {
     if (players[key]) {
       updatedPlayersList.push(players[key])
 

@@ -1,10 +1,12 @@
-import { findWinner } from '../utilities/utils'
 import { players, scores } from '../config/world'
+import { findWinner } from '../utilities/utils'
 
-const GetWinner = (io, options) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const GetWinner = (io: SocketIO.Server, options: IOptions) => {
   scores[options.gameId] = []
 
-  for (let key in players) {
+  for (const key in players) {
     if (players[key].gameId === options.gameId) {
       scores[options.gameId].push(players[key].score)
     }

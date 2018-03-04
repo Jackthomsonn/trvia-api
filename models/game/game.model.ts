@@ -3,17 +3,17 @@ import * as restful from 'node-restful'
 const mongoose = restful.mongoose
 
 const gameSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
   gameId: {
-    type: String,
-    required: true
+    required: true,
+    type: String
+  },
+  name: {
+    required: true,
+    type: String
   },
   questions: {
-    type: Array,
-    required: true
+    required: true,
+    type: Array
   }
 })
 

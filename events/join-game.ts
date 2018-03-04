@@ -1,8 +1,10 @@
+import { games, players } from '../config/world'
 import { doesGameExist, getQuestionsForGame } from '../utilities/utils'
-import { players, games } from '../config/world'
 
-const JoinGame = (socket, io, options) => {
-  doesGameExist(options.gameId).then(exists => {
+import { IOptions } from '../interfaces/IOptions'
+
+const JoinGame = (socket: SocketIO.Socket, io: SocketIO.Server, options: IOptions) => {
+  doesGameExist(options.gameId).then((exists: boolean) => {
     if (exists) {
       if (games[options.gameId].isInPlay) {
         socket.emit('gameHasStarted', { message: 'That game has already started' })
@@ -12,8 +14,8 @@ const JoinGame = (socket, io, options) => {
 
       players[socket.id] = {
         gameId: options.gameId,
-        name: options.playerName,
         isHost: options.isHost,
+        name: options.playerName,
         score: 0
       }
 

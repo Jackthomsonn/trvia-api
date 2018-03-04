@@ -1,7 +1,7 @@
+import { games, players } from '../config/world'
 import { deleteGame, getLiveGames } from '../utilities/utils'
-import { players, games } from '../config/world'
 
-const Disconnect = (socket, io) => {
+const Disconnect = (socket: SocketIO.Socket, io: SocketIO.Server) => {
   if (players[socket.id] && players[socket.id].isHost) {
     io.in(players[socket.id].gameId).emit('hostLeft')
     deleteGame(players[socket.id].gameId)

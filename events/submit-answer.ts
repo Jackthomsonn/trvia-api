@@ -1,6 +1,8 @@
 import { games, players } from '../config/world'
 
-const SubmitAnswer = (socket, io, options) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const SubmitAnswer = (socket: SocketIO.Socket, io: SocketIO.Server, options: IOptions) => {
   if (options.isAnswerCorrect) {
     players[socket.id].score = players[socket.id].score + 1 * 100
   }

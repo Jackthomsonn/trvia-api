@@ -1,25 +1,27 @@
-import { getQuestions, createGame, getLiveGames } from '../utilities/utils'
 import { games, players } from '../config/world'
+import { createGame, getLiveGames, getQuestions } from '../utilities/utils'
 
-const CreateGame = (socket, io, options) => {
-  getQuestions(options).then((questions: any) => {
-    createGame(options.gameName, questions).then((gameId: any) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const CreateGame = (socket: SocketIO.Socket, io: SocketIO.Server, options: IOptions) => {
+  getQuestions(options).then((questions: Array<any>) => {
+    createGame(options.gameName, questions).then((gameId: string) => {
       socket.emit('gameId', gameId)
       socket.join(gameId)
 
       games[gameId] = {
-        gameId: gameId,
-        gameName: options.gameName,
         answers: 0,
+        gameId,
+        gameName: options.gameName,
         isInPlay: false,
         private: options.private
       }
 
       players[socket.id] = {
-        gameId: gameId,
-        name: options.playerName,
+        gameId,
         isHost: options.isHost,
-        score: 0
+        name: options.playerName,
+        score: 0,
       }
 
       io.in(gameId).emit('playerJoined', options.playerName)

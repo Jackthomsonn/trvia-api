@@ -1,11 +1,11 @@
-import * as Express from 'express'
 import * as bodyParser from 'body-parser'
-import * as http from 'http'
-import * as io from 'socket.io'
 import * as cors from 'cors'
+import * as Express from 'express'
+import * as http from 'http'
 import * as mongoose from 'mongoose'
+import * as io from 'socket.io'
 
-import { PORT, NODE_ENV, MONGO_URI } from './config/env'
+import { MONGO_URI, NODE_ENV, PORT } from './config/env'
 import { socket } from './config/socket'
 
 import { gamesRoute } from './routes/games/games'
@@ -27,7 +27,7 @@ class App {
   }
 
   private instantiateApplicationDefaults = () => {
-    (<any>mongoose).Promise = global.Promise
+    (mongoose as any).Promise = global.Promise
     mongoose.connect(MONGO_URI)
     this.app.use(bodyParser.json())
     this.app.use(cors())

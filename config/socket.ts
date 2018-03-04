@@ -1,39 +1,39 @@
-import { JoinGame } from '../events/join-game'
 import { CreateGame } from '../events/create-game'
-import { StartGame } from '../events/start-game'
+import { Disconnect } from '../events/disconnect'
+import { EndOfGame } from '../events/end-of-game'
 import { GetLiveGames } from '../events/get-live-games'
 import { GetPlayers } from '../events/get-players'
-import { SubmitAnswer } from '../events/submit-answer'
-import { ResetAnswerCount } from '../events/reset-answer-count'
-import { EndOfGame } from '../events/end-of-game'
-import { LeaveGame } from '../events/leave-game'
-import { Disconnect } from '../events/disconnect'
 import { GetWinner } from '../events/get-winner'
+import { JoinGame } from '../events/join-game'
+import { LeaveGame } from '../events/leave-game'
+import { ResetAnswerCount } from '../events/reset-answer-count'
+import { StartGame } from '../events/start-game'
+import { SubmitAnswer } from '../events/submit-answer'
 
-const socket = io => {
-  io.on('connection', socket => {
+const socket = (io: SocketIO.Server) => {
+  io.on('connection', (socketInstance: SocketIO.Socket) => {
 
-    socket.on('joinGame', JoinGame.bind(null, socket, io))
+    socketInstance.on('joinGame', JoinGame.bind(null, socketInstance, io))
 
-    socket.on('createGame', CreateGame.bind(null, socket, io))
+    socketInstance.on('createGame', CreateGame.bind(null, socketInstance, io))
 
-    socket.on('startGame', StartGame.bind(null, io))
+    socketInstance.on('startGame', StartGame.bind(null, io))
 
-    socket.on('getLiveGames', GetLiveGames.bind(null, socket))
+    socketInstance.on('getLiveGames', GetLiveGames.bind(null, socketInstance))
 
-    socket.on('getPlayers', GetPlayers.bind(null, socket, io))
+    socketInstance.on('getPlayers', GetPlayers.bind(null, socketInstance, io))
 
-    socket.on('submitAnswer', SubmitAnswer.bind(null, socket, io))
+    socketInstance.on('submitAnswer', SubmitAnswer.bind(null, socketInstance, io))
 
-    socket.on('resetAnswerCount', ResetAnswerCount)
+    socketInstance.on('resetAnswerCount', ResetAnswerCount)
 
-    socket.on('endOfGame', EndOfGame.bind(null, socket, io))
+    socketInstance.on('endOfGame', EndOfGame.bind(null, socketInstance, io))
 
-    socket.on('leaveGame', LeaveGame.bind(null, socket, io))
+    socketInstance.on('leaveGame', LeaveGame.bind(null, socketInstance, io))
 
-    socket.on('disconnect', Disconnect.bind(null, socket, io))
+    socketInstance.on('disconnect', Disconnect.bind(null, socketInstance, io))
 
-    socket.on('getTheOverallWinner', GetWinner.bind(null, io))
+    socketInstance.on('getTheOverallWinner', GetWinner.bind(null, io))
   })
 }
 

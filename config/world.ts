@@ -1,6 +1,4 @@
-import { IGames } from "../interfaces/IGames";
-
-export const players = {}
-export const scores = []
+export const players: any = {}
+export const scores: any = []
 export const games: any = {}
-export const winningScore = {}
+export const winningScore: any = {}

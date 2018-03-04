@@ -1,7 +1,9 @@
+import { games, players } from '../config//world'
 import { deleteGame, getLiveGames } from '../utilities/utils'
-import { players, games } from '../config//world'
 
-const LeaveGame = (socket, io, options) => {
+import { IOptions } from '../interfaces/IOptions'
+
+const LeaveGame = (socket: SocketIO.Socket, io: SocketIO.Server, options: IOptions) => {
   if (players[socket.id] && players[socket.id].isHost) {
     io.in(options.gameId).emit('hostLeft')
     delete games[options.gameId]
