@@ -1,14 +1,14 @@
 {
   "name": "trvia-api",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "The Official API For Trvia",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Jackthomsonn/trvia-api.git"
   },
   "scripts": {
-    "start:dev": "yarn && yarn run build:dev && yarn start",
-    "release": "yarn && yarn run build:prod",
+    "start:dev": "npm && npm run build:dev && npm start",
+    "release": "npm && npm run build:prod",
     "build:dev": "webpack --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
     "start": "node build/trvia-api.js"
