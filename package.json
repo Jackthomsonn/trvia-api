@@ -1,5 +1,6 @@
 {
   "name": "trvia-api",
+  "version": "1.0.8",
   "description": "The Official API For Trvia",
   "repository": {
     "type": "git",
