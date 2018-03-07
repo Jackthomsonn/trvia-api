@@ -337,9 +337,9 @@ atob@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.0.3.tgz#19c7a760473774468f20b2d2d03372ad7d4cbf5d"
 
-automate-release-webpack-plugin@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/automate-release-webpack-plugin/-/automate-release-webpack-plugin-0.0.9.tgz#7370f151f25db01e44fe661a9bb5d924cc01e0cb"
+automate-release-webpack-plugin@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/automate-release-webpack-plugin/-/automate-release-webpack-plugin-0.0.11.tgz#1a5725f139cef8da96fc145f4f0bf75ad7880b01"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
