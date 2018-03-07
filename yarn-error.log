@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/jackthomson/.yarn/bin/yarn.js release
+  /usr/local/bin/node /Users/jackthomson/.yarn/bin/yarn.js release --env patch
 
 PATH: 
   /Users/jackthomson/.yarn/bin:/Users/jackthomson/.config/yarn/global/node_modules/.bin:/Users/jackthomson/Library/Android/sdk//tools:/Users/jackthomson/Library/Android/sdk//platform-tools:/Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/jackthomson/.yarn/bin:/Users/jackthomson/.config/yarn/global/node_modules/.bin:/Users/jackthomson/Library/Android/sdk//tools:/Users/jackthomson/Library/Android/sdk//platform-tools:/Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/bin:/Library/gradle/gradle-3.2/bin:/Library/gradle/gradle-3.2/bin
@@ -5467,7 +5467,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c yarn && yarn run build:prod
+  Arguments: -c yarn && yarn run build:prod --env patch
   Directory: /Users/jackthomson/Library/Mobile Documents/com~apple~CloudDocs/GitHub/Managed Projects/trvia-api
   Output:
   
